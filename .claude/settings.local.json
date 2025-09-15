@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(grep:*)",
+      "Bash(swift:*)",
+      "Bash(find:*)",
+      "Bash(rm:*)",
+      "Bash(timeout 120 xcodebuild:*)",
+      "Bash(timeout 60 xcodebuild:*)",
+      "Bash(ls:*)",
+      "Bash(timeout 30 xcodebuild:*)"
+    ],
+    "deny": []
+  }
+}
