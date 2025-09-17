@@ -72,7 +72,7 @@ struct DestinationMapView: View {
             MapUserLocationButton()
             MapCompass()
         }
-        .ignoresSafeArea(.container, edges: .bottom)
+        .ignoresSafeArea()
     }
     
     

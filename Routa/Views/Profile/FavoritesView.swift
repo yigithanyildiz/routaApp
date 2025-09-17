@@ -23,8 +23,8 @@ struct FavoritesView: View {
                     Spacer()
                 }
                 .padding(.horizontal, RoutaSpacing.lg)
-                .padding(.top, RoutaSpacing.lg)
-                
+                .dynamicIslandPadding()
+
                 if isLoading {
                     loadingView
                         .padding(.horizontal, RoutaSpacing.lg)
@@ -34,9 +34,10 @@ struct FavoritesView: View {
                     favoritesListView
                 }
             }
-            .padding(.bottom, 100)
+            .padding(.bottom, LayoutConstants.tabBarHeight)
         }
         .background(Color.routaBackground)
+        .dynamicIslandBlur()
         .onAppear {
             loadFavorites()
         }

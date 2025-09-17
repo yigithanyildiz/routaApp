@@ -28,30 +28,31 @@ struct ModernDestinationDetailView: View {
                     VStack(spacing: 0) {
                         // Hero Image Section (scrollable)
                         heroImageSection(geometry: geometry)
-                        
+
                         // Content Sections
                         VStack(spacing: 20) {
                             overviewSection
-                            weatherInfoSection  
+                            weatherInfoSection
                             quickFactsSection
                             mapSection
                             popularPlacesSection
                             bestTimeToVisitSection
-                            
+
                             // Create Route Button Section
                             createRouteButtonSection
                         }
                         .padding(.horizontal, 16)
                         .padding(.top, 20)
                     }
-                    .padding(.bottom, 100) // For tab bar space
+                    .padding(.bottom, LayoutConstants.tabBarHeight)
                 }
+                .topScrollBlur()
                 
                 // Navigation Overlay
                 navigationOverlay
             }
         }
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
         .sheet(isPresented: $showRouteGenerator) {
             RouteGeneratorView(
@@ -123,7 +124,7 @@ struct ModernDestinationDetailView: View {
         }
         .frame(width: geometry.size.width)
         .frame(height: 350)
-        .ignoresSafeArea(.container, edges: .top)
+        .ignoresSafeArea()
     }
     
     // MARK: - Navigation Overlay
@@ -188,9 +189,7 @@ struct ModernDestinationDetailView: View {
             
             Spacer()
         }
-        .safeAreaInset(edge: .top) {
-            Color.clear.frame(height: 8)
-        }
+        .dynamicIslandPadding()
     }
     // MARK: - Overview Section
     private var overviewSection: some View {

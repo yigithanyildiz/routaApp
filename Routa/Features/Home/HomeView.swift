@@ -27,14 +27,11 @@ struct HomeView: View {
                 popularDestinationsSection
                 allDestinationsSection
             }
-            .padding(.bottom, 90) // Padding for fixed tab bar
+            .padding(.bottom, LayoutConstants.tabBarHeight)
         }
-        .background(
-            // Ensure background doesn't interfere with tab bar blur
-            Color.routaBackground
-                .ignoresSafeArea(edges: .top) // Only ignore top safe area
-        )
-        .navigationBarHidden(true)
+        .background(Color.routaBackground)
+        .toolbar(.hidden, for: .navigationBar)
+        .dynamicIslandBlur()
         .refreshable {
             await refreshData()
         }
@@ -53,21 +50,21 @@ struct HomeView: View {
                     Text("Merhaba Gezgin! 👋")
                         .routaHeadline()
                         .foregroundColor(.routaText)
-                    
+
                     Text("Bugün nereyi keşfetmek istersin?")
                         .routaBody()
                         .foregroundColor(.routaTextSecondary)
                 }
-                
+
                 Spacer()
-                
-                // Profile Avatar
-             
-            
+
+       
+
+
             }
         }
         .padding(.horizontal, RoutaSpacing.lg)
-        .padding(.top, RoutaSpacing.xl)
+        .dynamicIslandPadding()
     }
     
     // MARK: - Search Bar Section

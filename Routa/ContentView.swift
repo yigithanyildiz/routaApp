@@ -121,14 +121,11 @@ struct SearchView: View {
                     searchResultsView
                 }
             }
-            .padding(.bottom, 90) // Padding for fixed tab bar
+            .padding(.bottom, LayoutConstants.tabBarHeight)
         }
-        .background(
-            // Ensure background doesn't interfere with tab bar blur
-            Color.routaBackground
-                .ignoresSafeArea(edges: .top) // Only ignore top safe area
-        )
-        .navigationBarHidden(true)
+        .background(Color.routaBackground)
+        .toolbar(.hidden, for: .navigationBar)
+        .dynamicIslandBlur()
         .sheet(isPresented: $showingFilters) {
             SearchFiltersView(viewModel: viewModel)
         }
@@ -193,7 +190,7 @@ struct SearchView: View {
             }
         }
         .padding(.horizontal, RoutaSpacing.lg)
-        .padding(.top, RoutaSpacing.lg)
+        .dynamicIslandPadding()
     }
     
     private var categoryFiltersSection: some View {
@@ -965,7 +962,7 @@ struct MyRoutesView: View {
                         .frame(maxWidth: .infinity)
                     Spacer()
                 }
-                .padding(.bottom, 90) // Padding for fixed tab bar
+                .padding(.bottom, LayoutConstants.tabBarHeight)
             } else if let error = viewModel.error {
                 VStack {
                     Spacer()
@@ -985,22 +982,19 @@ struct MyRoutesView: View {
                     Spacer()
                 }
                 .padding()
-                .padding(.bottom, 90) // Padding for fixed tab bar
+                .padding(.bottom, LayoutConstants.tabBarHeight)
             } else if viewModel.savedRoutes.isEmpty {
                 emptyStateView
-                    .padding(.bottom, 90) // Padding for fixed tab bar
+                    .padding(.bottom, LayoutConstants.tabBarHeight)
             } else {
                 routesListView
-                    .padding(.bottom, 90) // Padding for fixed tab bar
+                    .padding(.bottom, LayoutConstants.tabBarHeight)
             }
         }
-        .background(
-            // Ensure background doesn't interfere with tab bar blur
-            Color.routaBackground
-                .ignoresSafeArea(edges: .top) // Only ignore top safe area
-        )
+        .background(Color.routaBackground)
         .navigationTitle("Rotalarım")
         .navigationBarTitleDisplayMode(.large)
+        .dynamicIslandBlur()
         .refreshable {
             await viewModel.fetchSavedRoutes()
         }

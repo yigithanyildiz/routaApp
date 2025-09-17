@@ -37,13 +37,10 @@ struct ProfileView: View {
                 accountManagementSection
                 authSection
             }
-            .padding(.bottom, 90) // Padding for fixed tab bar
+            .padding(.bottom, LayoutConstants.tabBarHeight)
         }
-        .background(
-            // Ensure background doesn't interfere with tab bar blur
-            Color.routaBackground
-                .ignoresSafeArea(edges: .top) // Only ignore top safe area
-        )
+        .background(Color.routaBackground)
+        .dynamicIslandBlur()
         .navigationBarTitleDisplayMode(.large)
         .navigationTitle("Profil")
         .refreshable {

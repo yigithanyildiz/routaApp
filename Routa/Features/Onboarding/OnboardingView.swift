@@ -31,7 +31,7 @@ struct OnboardingView: View {
                 VStack(spacing: 0) {
                     // Top Navigation
                     topNavigationBar
-                        .padding(.top, geometry.safeAreaInsets.top)
+                        .adaptiveTopPadding()
                     
                     // Main Content
                     TabView(selection: $currentPage) {
@@ -60,11 +60,12 @@ struct OnboardingView: View {
                     
                     // Bottom Navigation
                     bottomNavigationBar
-                        .padding(.bottom, geometry.safeAreaInsets.bottom + 20)
+                        .padding(.bottom, UIDevice.safeAreaInsets.bottom + 20)
                 }
                 
             }
         }
+        .topScrollBlur(enableBlur: false) // Onboarding has special background
         .routaDesignSystem()
         .onAppear {
             withAnimation(.linear(duration: 20).repeatForever(autoreverses: false)) {
