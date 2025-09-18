@@ -543,3 +543,4 @@ struct EmptyStateCard: View {
             .environmentObject(DependencyContainer())
     }
 }
+ 

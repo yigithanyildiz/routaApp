@@ -4,7 +4,7 @@ import Foundation
 struct ContentView: View {
     @EnvironmentObject var dependencyContainer: DependencyContainer
     @State private var selectedTab = 0
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
             // Tab Content
@@ -32,6 +32,7 @@ struct ContentView: View {
                     }
                 }
             }
+            
             .background(Color.routaBackground)
             
             // Fixed Tab Bar at Bottom
@@ -46,6 +47,7 @@ struct ContentView: View {
                 style: .standard
             )
         }
+        .ignoresSafeArea()
     }
 }
 

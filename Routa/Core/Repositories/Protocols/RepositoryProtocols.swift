@@ -30,7 +30,10 @@ enum RepositoryError: LocalizedError {
     case networkError(String)
     case decodingError
     case unknown
-    
+    case firebaseError(String)
+    case dataNotFound
+    case invalidData
+
     var errorDescription: String? {
         switch self {
         case .destinationNotFound:
@@ -43,6 +46,12 @@ enum RepositoryError: LocalizedError {
             return "Veri işleme hatası"
         case .unknown:
             return "Bilinmeyen bir hata oluştu"
+        case .firebaseError(let message):
+            return "Firebase hatası: \(message)"
+        case .dataNotFound:
+            return "Veri bulunamadı"
+        case .invalidData:
+            return "Geçersiz veri formatı"
         }
     }
 }

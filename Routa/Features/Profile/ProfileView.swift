@@ -42,7 +42,6 @@ struct ProfileView: View {
         .background(Color.routaBackground)
         .dynamicIslandBlur()
         .navigationBarTitleDisplayMode(.large)
-        .navigationTitle("Profil")
         .refreshable {
             await refreshProfile()
         }
@@ -119,6 +118,7 @@ struct ProfileView: View {
                             .foregroundColor(.white)
                     }
                     
+                    
                     VStack(spacing: RoutaSpacing.sm) {
                         Text(authManager.isAuthenticated ? (authManager.user?.displayName ?? authManager.user?.email ?? "Kullanıcı") : "Misafir Kullanıcı")
                             .routaTitle2()
@@ -162,6 +162,7 @@ struct ProfileView: View {
                 .padding(RoutaSpacing.xl)
             }
         }
+        .padding(.top, RoutaSpacing.lg)
         .padding(.horizontal, RoutaSpacing.lg)
     }
     
@@ -221,7 +222,6 @@ struct ProfileView: View {
                             Circle()
                                 .fill(RoutaGradients.primaryGradient)
                                 .frame(width: 44, height: 44)
-                                .routaGlow(color: .routaPrimary, radius: 8)
                             
                             Image(systemName: "heart.fill")
                                 .font(.system(size: 20, weight: .medium))

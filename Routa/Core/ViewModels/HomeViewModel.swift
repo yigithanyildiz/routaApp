@@ -32,14 +32,14 @@ class HomeViewModel: ObservableObject {
     func fetchPopularDestinations() async {
         // Cancel previous task if exists
         fetchPopularTask?.cancel()
-        
+
         isLoadingPopular = true
         popularError = nil
-        
+
         fetchPopularTask = Task { [weak self] in
             do {
                 let destinations = try await self?.destinationRepository.fetchPopularDestinations()
-                
+
                 await MainActor.run { [weak self] in
                     if !Task.isCancelled, let self = self, let destinations = destinations {
                         self.popularDestinations = destinations
@@ -51,7 +51,6 @@ class HomeViewModel: ObservableObject {
                     // Ignore cancellation errors
                     if !Task.isCancelled && !(error is CancellationError) {
                         self?.popularError = error
-                        print("Error fetching popular destinations: \(error)")
                     }
                     self?.isLoadingPopular = false
                 }
@@ -62,14 +61,14 @@ class HomeViewModel: ObservableObject {
     func fetchAllDestinations() async {
         // Cancel previous task if exists
         fetchAllTask?.cancel()
-        
+
         isLoadingAll = true
         allError = nil
-        
+
         fetchAllTask = Task { [weak self] in
             do {
                 let destinations = try await self?.destinationRepository.fetchAllDestinations()
-                
+
                 await MainActor.run { [weak self] in
                     if !Task.isCancelled, let self = self, let destinations = destinations {
                         self.allDestinations = destinations
@@ -81,7 +80,6 @@ class HomeViewModel: ObservableObject {
                     // Ignore cancellation errors
                     if !Task.isCancelled && !(error is CancellationError) {
                         self?.allError = error
-                        print("Error fetching all destinations: \(error)")
                     }
                     self?.isLoadingAll = false
                 }

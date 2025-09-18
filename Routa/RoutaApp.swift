@@ -1,6 +1,7 @@
 import SwiftUI
 import FirebaseAuth
 import FirebaseCore
+import FirebaseFirestore
 import Foundation
 
 @main
@@ -16,6 +17,12 @@ struct RoutaApp: App {
     
     init() {
         FirebaseApp.configure()
+
+        // Firestore cache optimizasyonu
+        let settings = FirestoreSettings()
+        settings.cacheSettings = MemoryCacheSettings()
+        settings.isPersistenceEnabled = true
+        Firestore.firestore().settings = settings
     }
 
     
@@ -135,11 +142,18 @@ class DependencyContainer: ObservableObject {
     let destinationRepository: DestinationRepository
     let routeRepository: RouteRepository
     let placeRepository: PlaceRepository
-    
+
+    // Services
+    let accommodationService: FirebaseAccommodationService
+
     init() {
-        // Initialize repositories with mock implementations
-        self.destinationRepository = MockDestinationRepository()
+        // Initialize Firebase repositories
+        self.destinationRepository = FirebaseDestinationRepository()
+        self.placeRepository = FirebasePlaceRepository()
+        self.accommodationService = FirebaseAccommodationService()
+
+        // RouteRepository şimdilik mock kalıyor (users collection yok)
         self.routeRepository = MockRouteRepository()
-        self.placeRepository = MockPlaceRepository()
     }
+
 }

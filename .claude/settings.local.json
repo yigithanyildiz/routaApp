@@ -10,7 +10,8 @@
       "Bash(timeout 120 xcodebuild:*)",
       "Bash(timeout 60 xcodebuild:*)",
       "Bash(ls:*)",
-      "Bash(timeout 30 xcodebuild:*)"
+      "Bash(timeout 30 xcodebuild:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
