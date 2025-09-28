@@ -29,12 +29,9 @@ struct RoutaApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if showLaunchScreen {
-                    // Show launch screen while checking auth state
-                    LaunchScreenView()
-                } else if !hasCompletedOnboarding {
+            if !hasCompletedOnboarding {
                     // Show onboarding for new users
-                    OnboardingView {
+                    OnboardingContainerView {
                         hasCompletedOnboarding = true
                         authManager.appState = .gateway
                     }

@@ -463,6 +463,8 @@ struct ProfileView: View {
                     size: .large
                 ) {
                     UserDefaults.standard.set(false, forKey: "hasCompletedOnboarding")
+                    // Reset image cache for fresh onboarding experience
+                    ImageCacheManager.shared.clearCache()
                     RoutaHapticsManager.shared.buttonTap()
                 }
                 

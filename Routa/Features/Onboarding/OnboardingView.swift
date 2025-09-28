@@ -2,41 +2,39 @@ import SwiftUI
 import CoreLocation
 import UserNotifications
 
-// MARK: - Onboarding View
+// MARK: - Modern Onboarding View
 struct OnboardingView: View {
     @State private var currentPage = 0
-    @State private var dragOffset: CGSize = .zero
-    @State private var animationOffset: CGFloat = 0
     @StateObject private var locationManager = LocationManager()
     @StateObject private var notificationManager = NotificationManager()
-    
+
     let pages = OnboardingPage.samplePages
     var onComplete: () -> Void
-    
+
     init(onComplete: @escaping () -> Void) {
         self.onComplete = onComplete
     }
-    
+
     var body: some View {
+        
         GeometryReader { geometry in
+            
             ZStack {
-                // Enhanced Animated Background
-                EnhancedOnboardingBackground(currentPage: currentPage, totalPages: pages.count)
+                // Dark background
+                Color.black
                     .ignoresSafeArea()
                 
-                // Floating Elements
-                OnboardingFloatingElements(currentPage: currentPage, geometry: geometry)
-                    .ignoresSafeArea()
                 
                 VStack(spacing: 0) {
-                    // Top Navigation
-                    topNavigationBar
-                        .adaptiveTopPadding()
+                    // Logo Header
+                    headerView
+                        .padding(.top, geometry.safeAreaInsets.top - 80 )
+                    
                     
                     // Main Content
                     TabView(selection: $currentPage) {
                         ForEach(Array(pages.enumerated()), id: \.element.id) { index, page in
-                            OnboardingPageView(
+                            ModernOnboardingPageView(
                                 page: page,
                                 pageIndex: index,
                                 currentPage: currentPage,
@@ -48,110 +46,75 @@ struct OnboardingView: View {
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    .onAppear {
-                        setupPageControlAppearance()
-                    }
                     .onChange(of: currentPage) { _, newValue in
                         RoutaHapticType.swipeAction.trigger()
-                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                            animationOffset = CGFloat(newValue) * 20
-                        }
                     }
                     
-                    // Bottom Navigation
-                    bottomNavigationBar
-                        .padding(.bottom, UIDevice.safeAreaInsets.bottom + 20)
+                    Spacer()
+                    
+                    // Page indicators
+                    pageIndicators
+                        .padding(.bottom, 30)
+
+                    // CTA Button
+                    ctaButton
+                        .padding(.horizontal, 32)
+                        .padding(.bottom, geometry.safeAreaInsets.bottom + 10)
                 }
+            }
                 
-            }
+            
         }
-        .topScrollBlur(enableBlur: false) // Onboarding has special background
-        .routaDesignSystem()
-        .onAppear {
-            withAnimation(.linear(duration: 20).repeatForever(autoreverses: false)) {
-                animationOffset = 360
-            }
-        }
-    }
-    
-    // MARK: - Background Gradient
-    private var backgroundGradient: some View {
-        let currentPageGradient = pages[safe: currentPage]?.gradient ?? RoutaGradients.primaryGradient
-        let nextPageGradient = pages[safe: currentPage + 1]?.gradient ?? currentPageGradient
         
-        return LinearGradient(
-            colors: [
-               .routaPrimary,
-               .routaSecondary
-            ],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .opacity(0.6)
-        .animation(.easeInOut(duration: 0.8), value: currentPage)
+        .routaDesignSystem()
     }
     
-    // MARK: - Top Navigation Bar
-    private var topNavigationBar: some View {
-        HStack {
-            // Progress Indicator
-            HStack(spacing: 12) {
-                ForEach(0..<pages.count, id: \.self) { index in
-                    ProgressDot(
-                        isActive: index == currentPage,
-                        isPast: index < currentPage,
-                        color: pages[safe: index]?.gradientColors.first ?? .routaPrimary
-                    )
-                }
-            }
-            
-            Spacer()
-            
-            // Skip Button
-            if currentPage < pages.count - 1 {
-                AnimatedSkipButton {
-                    skipOnboarding()
-                }
+    // MARK: - Header View
+    private var headerView: some View {
+        Text("Routa")
+            .font(.largeTitle)
+            .fontWeight(.bold)
+            .foregroundColor(.white)
+    }
+
+    // MARK: - Page Indicators
+    private var pageIndicators: some View {
+        HStack(spacing: 12) {
+            ForEach(0..<pages.count, id: \.self) { index in
+                Circle()
+                    .fill(index == currentPage ? .routaPrimary : Color.gray)
+                    .frame(width: 8, height: 8)
+                    .scaleEffect(index == currentPage ? 1.2 : 1.0)
+                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: currentPage)
             }
         }
-        .padding(.horizontal, RoutaSpacing.lg)
-        .padding(.vertical, RoutaSpacing.md)
     }
-    
-    // MARK: - Bottom Navigation Bar
-    private var bottomNavigationBar: some View {
-        VStack(spacing: RoutaSpacing.lg) {
-            // Main Action Button
+
+    // MARK: - CTA Button
+    private var ctaButton: some View {
+        Button(action: {
             if currentPage == pages.count - 1 {
-                RoutaGradientButton(
-                    "Maceraya Başla",
-                    icon: "arrow.right",
-                    gradient: pages[currentPage].gradient,
-                    size: .large
-                ) {
-                    // Directly complete onboarding without delay
-                    onComplete()
-                }
-                .routaFloat(amplitude: 5, duration: 3.0)
+                onComplete()
             } else {
-                RoutaButton(
-                    "Devam Et",
-                    icon: "arrow.right",
-                    variant: .primary,
-                    size: .large
-                ) {
-                    nextPage()
-                }
+                nextPage()
             }
-            
-            // Interactive Progress Bar
-            InteractiveProgressBar(currentPage: currentPage, totalPages: pages.count) { targetPage in
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                    currentPage = targetPage
-                }
-            }
+        }) {
+            Text(currentPage == pages.count - 1 ? "Get Started" : "Continue")
+                .font(.headline)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 56)
+                .background(
+                    LinearGradient(
+                        colors: [.routaPrimary, .routaSecondary],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .cornerRadius(16)
         }
-        .padding(.horizontal, RoutaSpacing.lg)
+        .buttonStyle(PlainButtonStyle())
     }
     
     // MARK: - Helper Methods
@@ -162,153 +125,150 @@ struct OnboardingView: View {
             }
         }
     }
-    
-    private func skipOnboarding() {
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-            currentPage = pages.count - 1
-        }
-    }
-    
-    
-    private func setupPageControlAppearance() {
-        UIPageControl.appearance().currentPageIndicatorTintColor = UIColor.white
-        UIPageControl.appearance().pageIndicatorTintColor = UIColor.white.withAlphaComponent(0.3)
-    }
 }
 
-// MARK: - Individual Onboarding Page View
-struct OnboardingPageView: View {
+// MARK: - Modern Onboarding Page View
+struct ModernOnboardingPageView: View {
     let page: OnboardingPage
     let pageIndex: Int
     let currentPage: Int
     let geometry: GeometryProxy
     let locationManager: LocationManager
     let notificationManager: NotificationManager
-    
-    @State private var imageScale: CGFloat = 0.8
-    @State private var titleOffset: CGFloat = 50
+
     @State private var contentOpacity: Double = 0
-    @State private var cardOffset: CGFloat = 100
-    
+    @State private var imageScale: CGFloat = 0.9
+
     var isCurrentPage: Bool {
         pageIndex == currentPage
     }
-    
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: RoutaSpacing.lg) {
-                
-                // Hero Section
-                heroSection
-                    .routaFloat(amplitude: isCurrentPage ? 15 : 0, duration: 4.0)
-                
-                // Content Card
-                contentCard
-                    .offset(y: cardOffset)
-                    .opacity(contentOpacity)
-                
-                // Permission Buttons
-                if page.requiresLocationPermission || page.requiresNotificationPermission {
-                    permissionSection
-                        .transition(.routaSlideIn)
-                }
-                
-                // Extra spacing to ensure content extends below screen
-                Spacer(minLength: 150)
+        if page.requiresLocationPermission || page.requiresNotificationPermission {
+            // Fixed hero image with scrollable content below for permission page
+            
+               
+
+                // Scrollable content section
+                ScrollView {
+                    VStack(spacing: 32) {
+                        Spacer()
+                        heroImageCard
+                            .padding(.horizontal, 32)
+                        // Content Section
+                        contentSection
+                            .padding(.horizontal, 32)
+
+
+                        // Permission Buttons
+                        permissionSection
+                            .padding(.horizontal, 32)
+                            .padding(.bottom, 100) // Extra space for scroll
+                    }
             }
-            .padding(.horizontal, RoutaSpacing.lg)
-            .padding(.bottom, 50) // Reduce bottom padding to show content is cut off
-        }
-        .onAppear {
-            animatePageEntry()
-        }
-        .onChange(of: isCurrentPage) { _, newValue in
-            if newValue {
-                animatePageEntry()
+            .opacity(contentOpacity)
+            .scaleEffect(imageScale)
+            .onAppear {
+                if isCurrentPage {
+                    animateEntry()
+                }
+            }
+            .onChange(of: isCurrentPage) { _, newValue in
+                if newValue {
+                    animateEntry()
+                }
+            }
+        } else {
+            // Non-scrollable content for other pages
+            VStack(spacing: 32) {
+                // Hero Image Card
+                heroImageCard
+
+                // Content Section
+                contentSection
+            }
+            .padding(.horizontal, 32)
+            .opacity(contentOpacity)
+            .scaleEffect(imageScale)
+            .onAppear {
+                if isCurrentPage {
+                    animateEntry()
+                }
+            }
+            .onChange(of: isCurrentPage) { _, newValue in
+                if newValue {
+                    animateEntry()
+                }
             }
         }
     }
     
-    // MARK: - Hero Section
-    private var heroSection: some View {
-        VStack(spacing: RoutaSpacing.lg) {
-            // Hero Image/Icon
-            ZStack {
-                // Background Glow
-                Circle()
-                    .fill(page.gradient)
-                    .frame(width: 200, height: 200)
-                    .blur(radius: 30)
-                    .opacity(0)
-                    .routaPulse(minScale: 0.8, maxScale: 1.2, duration: 2.0)
-                
-                // Main Image
-                Image(systemName: page.imageName)
-                    .font(.system(size: 80, weight: .light))
-                    .foregroundColor(.white)
-                    .frame(width: 120, height: 120)
-                    .background(
-                        Circle()
-                            .fill(page.gradient)
-                            .routaShadow(.high, style: .glow(.white))
+    // MARK: - Hero Image Card
+    private var heroImageCard: some View {
+        RoundedRectangle(cornerRadius: 20)
+            .fill(Color.white.opacity(0.1))
+            .frame(height: geometry.size.height * 0.35)
+            .overlay(
+                // Placeholder for hero image - can be replaced with actual image
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        Color.gray.opacity(0.2
+                        )
                     )
-                    .scaleEffect(imageScale)
-            }
-            
-            // Title
+                    .overlay(
+                        OnboardingCachedAsyncImage(url: URL(string: page.imageURL)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: geometry.size.width - 80, height: geometry.size.height * 0.35 - 16)
+                                .clipped()
+                                .cornerRadius(16)
+                        } placeholder: {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .scaleEffect(1.5)
+                        }
+                    )
+                    .padding(8)
+            )
+            .shadow(color: .black.opacity(0.2), radius: 20, x: 0, y: 10)
+    }
+    
+    // MARK: - Content Section
+    private var contentSection: some View {
+        VStack(spacing: 16) {
             Text(page.title)
-                .routaHeroTitle()
+                .font(.title2)
+                .fontWeight(.bold)
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)
-                .offset(y: titleOffset)
-        }
-    }
-    
-    // MARK: - Content Card
-    private var contentCard: some View {
-        VStack(spacing: RoutaSpacing.md) {
-            RoutaCard(style: .glassmorphic, elevation: .high) {
-                VStack(spacing: RoutaSpacing.lg) {
-                    Text(page.subtitle)
-                        .routaTitle2()
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                    
-                    Text(page.description)
-                        .routaBody()
-                        .foregroundColor(.white.opacity(0.9))
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(4)
-                }
-                .padding(RoutaSpacing.lg)
-            }
-            .routaShadow(.floating, style: .glassmorphic)
-            
-            // Scroll indicator
-         
+
+            Text(page.description)
+                .font(.body)
+                .foregroundColor(Color.gray)
+                .multilineTextAlignment(.center)
+                .lineSpacing(4)
         }
     }
     
     // MARK: - Permission Section
     private var permissionSection: some View {
-        VStack(spacing: RoutaSpacing.md) {
+        VStack(spacing: 12) {
             if page.requiresLocationPermission {
                 PermissionButton(
-                    title: "Konum İzni Ver",
+                    title: "Enable Location",
                     icon: "location.fill",
-                    description: "Size özel öneriler için",
-                    gradient: RoutaGradients.accentGradient
+                    description: "For personalized recommendations"
                 ) {
                     locationManager.requestLocationPermission()
                 }
             }
-            
+
             if page.requiresNotificationPermission {
                 PermissionButton(
-                    title: "Bildirim İzni Ver",
+                    title: "Enable Notifications",
                     icon: "bell.fill",
-                    description: "Güncel kalın",
-                    gradient: RoutaGradients.secondaryGradient
+                    description: "Stay updated with new routes"
                 ) {
                     notificationManager.requestNotificationPermission()
                 }
@@ -317,142 +277,67 @@ struct OnboardingPageView: View {
     }
     
     // MARK: - Animation Methods
-    private func animatePageEntry() {
-        // Reset all animations
-        imageScale = 0.8
-        titleOffset = 50
+    private func animateEntry() {
+        // Reset animations
         contentOpacity = 0
-        cardOffset = 100
-        
-        // Animate in sequence
-        withAnimation(.spring(response: 0.8, dampingFraction: 0.7).delay(0.1)) {
+        imageScale = 0.9
+
+        // Animate in
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
+            contentOpacity = 1.0
             imageScale = 1.0
         }
-        
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.3)) {
-            titleOffset = 0
-        }
-        
-        withAnimation(.spring(response: 0.7, dampingFraction: 0.8).delay(0.5)) {
-            contentOpacity = 1.0
-            cardOffset = 0
-        }
-        
-        // Add a subtle bounce to hint at scrollable content
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.6).delay(1.5)) {
-            cardOffset = -10
-        }
-        
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.6).delay(1.8)) {
-            cardOffset = 0
-        }
     }
 }
 
-// MARK: - Progress Dot Component
-struct ProgressDot: View {
-    let isActive: Bool
-    let isPast: Bool
-    let color: Color
-    
-    var body: some View {
-        Circle()
-            .fill(isActive || isPast ? color : Color.white.opacity(0.3))
-            .frame(width: 8, height: 8)
-            .overlay(
-                Circle()
-                    .stroke(Color.white.opacity(0.6), lineWidth: isActive ? 2 : 0)
-            )
-            .scaleEffect(isActive ? 1.2 : 1.0)
-            .animation(.spring(response: 0.4, dampingFraction: 0.8), value: isActive)
-    }
-}
-
-// MARK: - Page Indicator Component
-struct PageIndicatorView: View {
-    let currentPage: Int
-    let totalPages: Int
-    
-    var body: some View {
-        HStack(spacing: 8) {
-            ForEach(0..<totalPages, id: \.self) { index in
-                Circle()
-                    .fill(index == currentPage ? Color.white : Color.white.opacity(0.3))
-                    .frame(width: index == currentPage ? 10 : 6, height: index == currentPage ? 10 : 6)
-                    .scaleEffect(index == currentPage ? 1.0 : 0.8)
-                    .animation(.spring(response: 0.3, dampingFraction: 0.7), value: currentPage)
-            }
-        }
-        .padding(.vertical, RoutaSpacing.sm)
-    }
-}
 
 // MARK: - Permission Button Component
 struct PermissionButton: View {
     let title: String
     let icon: String
     let description: String
-    let gradient: LinearGradient
     let action: () -> Void
-    
-    @State private var isPressed = false
-    
+
     var body: some View {
-        Button(action: {
-            RoutaHapticType.buttonPress.trigger()
-            action()
-        }) {
-            HStack(spacing: RoutaSpacing.md) {
+        Button(action: action) {
+            HStack(spacing: 16) {
                 Image(systemName: icon)
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(.white)
-                    .frame(width: 50, height: 50)
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundColor(.routaPrimary)
+                    .frame(width: 40, height: 40)
                     .background(
                         Circle()
-                            .fill(gradient)
-                            .routaShadow(.medium, style: .glow(.white))
+                            .fill(Color.white.opacity(0.1))
                     )
-                
-                VStack(alignment: .leading, spacing: 4) {
+
+                VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .routaCallout()
+                        .font(.callout)
                         .foregroundColor(.white)
                         .fontWeight(.semibold)
-                    
+
                     Text(description)
-                        .routaCaption1()
-                        .foregroundColor(.white.opacity(0.8))
+                        .font(.caption)
+                        .foregroundColor(.gray)
                 }
-                
+
                 Spacer()
-                
+
                 Image(systemName: "arrow.right")
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white.opacity(0.8))
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.gray)
             }
-            .padding(RoutaSpacing.lg)
+            .padding(16)
             .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(.ultraThinMaterial)
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white.opacity(0.05))
                     .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(
-                                LinearGradient(
-                                    colors: [.white.opacity(0.3), .white.opacity(0.1)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1
-                            )
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(Color.white.opacity(0.1), lineWidth: 1)
                     )
             )
         }
         .buttonStyle(PlainButtonStyle())
-        .scaleEffect(isPressed ? 0.96 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
-        .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
-            isPressed = pressing
-        }, perform: {})
     }
 }
 

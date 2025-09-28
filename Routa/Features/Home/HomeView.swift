@@ -125,7 +125,7 @@ struct HomeView: View {
                 // Tümünü gör action
             }
             .padding(.horizontal, RoutaSpacing.lg)
-            
+
             if viewModel.isLoadingPopular {
                 ShimmerLoadingView()
                     .padding(.horizontal, RoutaSpacing.lg)
