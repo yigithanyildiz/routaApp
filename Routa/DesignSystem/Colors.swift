@@ -55,9 +55,21 @@ extension Color {
     })
     
     // MARK: - Neutral Colors (Adaptive)
-    static let routaBackground = Color(UIColor.systemBackground)
-    static let routaSurface = Color(UIColor.secondarySystemBackground)
-    static let routaCard = Color(UIColor.tertiarySystemBackground)
+    static let routaBackground = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark ?
+        UIColor(red: 0.04, green: 0.1, blue: 0.16, alpha: 1.0) :
+        UIColor.systemBackground
+    })
+    static let routaSurface = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark ?
+        UIColor(red: 0.08, green: 0.13, blue: 0.21, alpha: 1.0) :
+        UIColor.secondarySystemBackground
+    })
+    static let routaCard = Color(UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark ?
+        UIColor(red: 0.1, green: 0.16, blue: 0.26, alpha: 1.0) :
+        UIColor.tertiarySystemBackground
+    })
     static let routaText = Color(UIColor.label)
     static let routaTextSecondary = Color(UIColor.secondaryLabel)
     static let routaBorder = Color(UIColor.separator)
@@ -113,8 +125,8 @@ struct RoutaGradients {
     
     static let glassmorphicGradient = LinearGradient(
         colors: [
-            Color(UIColor.systemBackground).opacity(0.25),
-            Color(UIColor.systemBackground).opacity(0.1)
+            Color.routaBackground.opacity(0.25),
+            Color.routaBackground.opacity(0.1)
         ],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
@@ -129,11 +141,22 @@ struct RoutaGradients {
         endPoint: .bottomTrailing
     )
     
+    // MARK: - Dark Background Gradient
+    static let darkBackgroundGradient = LinearGradient(
+        colors: [
+            Color(red: 0.04, green: 0.1, blue: 0.16),
+            Color(red: 0.08, green: 0.13, blue: 0.21),
+            Color(red: 0.1, green: 0.16, blue: 0.26)
+        ],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+
     // MARK: - Shadow Gradients
     static let shadowGradient = RadialGradient(
         colors: [
-            Color.black.opacity(0.15),
-            Color.black.opacity(0.05),
+            Color(red: 0.04, green: 0.1, blue: 0.16).opacity(0.15),
+            Color(red: 0.04, green: 0.1, blue: 0.16).opacity(0.05),
             Color.clear
         ],
         center: .center,
@@ -165,15 +188,15 @@ struct RoutaColorScheme {
     }
     
     var backgroundColor: Color {
-        isDarkMode ? Color.black : Color.routaBackground
+        isDarkMode ? Color(red: 0.04, green: 0.1, blue: 0.16) : Color.routaBackground
     }
     
     var surfaceColor: Color {
-        isDarkMode ? Color(red: 0.1, green: 0.1, blue: 0.1) : Color.routaSurface
+        isDarkMode ? Color(red: 0.08, green: 0.13, blue: 0.21) : Color.routaSurface
     }
     
     var cardColor: Color {
-        isDarkMode ? Color(red: 0.15, green: 0.15, blue: 0.15) : Color.routaCard
+        isDarkMode ? Color(red: 0.1, green: 0.16, blue: 0.26) : Color.routaCard
     }
     
     var textColor: Color {

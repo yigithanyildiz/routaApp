@@ -308,7 +308,6 @@ struct ModernDestinationCard: View {
             RoundedRectangle(cornerRadius: 24)
                 .fill(Color.routaCard)
         )
-        .routaShadow(isPressed ? .low : .medium, style: .colored(.routaPrimary))
         .scaleEffect(isPressed ? 0.97 : 1.0)
         .animation(.easeInOut(duration: 0.15), value: isPressed)
     }
