@@ -270,8 +270,12 @@ struct AuthGatewayView: View {
                     
                     // Social Login Buttons
                     HStack(spacing: 16) {
-                        SocialButton(icon: "apple.logo", title: "Apple")
-                        SocialButton(icon: "ios_light", title: "Google")
+                        SocialButton(icon: "apple.logo", title: "Apple") {
+                            // Apple Sign-In will be implemented later
+                        }
+                        SocialButton(icon: "ios_light", title: "Google") {
+                            handleGoogleSignIn()
+                        }
                     }
                     .padding(.horizontal, 24)
                     .scaleEffect(animateEntrance ? 1.0 : 0.95)
@@ -442,6 +446,33 @@ struct AuthGatewayView: View {
             showAlert = true
         }
     }
+
+    // MARK: - Google Sign-In
+    private func handleGoogleSignIn() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            alertMessage = "Google ile giriş yapılamadı. Lütfen tekrar deneyin."
+            showAlert = true
+            return
+        }
+
+        isLoading = true
+
+        authManager.signInWithGoogle(presenting: rootViewController) { [self] result in
+            DispatchQueue.main.async {
+                isLoading = false
+                switch result {
+                case .success:
+                    RoutaHapticsManager.shared.success()
+                    showSuccess = true
+                case .failure(let error):
+                    RoutaHapticsManager.shared.error()
+                    alertMessage = "Google ile giriş hatası: \(error.localizedDescription)"
+                    showAlert = true
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Tab Button Component
@@ -485,11 +516,12 @@ struct TabButton: View {
 struct SocialButton: View {
     let icon: String
     let title: String
-    
+    var action: (() -> Void)? = nil
+
     var body: some View {
         Button(action: {
             RoutaHapticsManager.shared.buttonTap()
-            // Social login action
+            action?()
         }) {
             HStack(spacing: 10) {
                 Group {

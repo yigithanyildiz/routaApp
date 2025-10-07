@@ -3,6 +3,7 @@ import FirebaseAuth
 import FirebaseCore
 import FirebaseFirestore
 import Foundation
+import GoogleSignIn
 
 @main
 struct RoutaApp: App {
@@ -29,7 +30,7 @@ struct RoutaApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-            if !hasCompletedOnboarding {
+                if !hasCompletedOnboarding {
                     // Show onboarding for new users
                     OnboardingContainerView {
                         hasCompletedOnboarding = true
@@ -63,6 +64,9 @@ struct RoutaApp: App {
             }
             .detectLanguageChange() // Force UI refresh on language change
             .routaDesignSystem()
+            .onOpenURL { url in
+                GIDSignIn.sharedInstance.handle(url)
+            }
             .onAppear {
                 setupApp()
             }

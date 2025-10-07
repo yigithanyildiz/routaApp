@@ -12,7 +12,11 @@
       "Bash(ls:*)",
       "Bash(timeout 30 xcodebuild:*)",
       "Bash(git add:*)",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(xcrun simctl list:*)",
+      "Bash(git checkout:*)",
+      "Bash(plutil:*)",
+      "Read(//Users/yigithanyildiz/Library/Developer/Xcode/DerivedData/Routa-hjxkhbnzwwkxnidensfbajwiksyr/Build/Products/Debug-iphonesimulator/Routa.app/**)"
     ],
     "deny": []
   }

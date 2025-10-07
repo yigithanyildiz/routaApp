@@ -1,6 +1,8 @@
 import Foundation
 import FirebaseAuth
+import FirebaseCore
 import Combine
+import GoogleSignIn
 
 enum AppState {
     case onboarding
@@ -129,6 +131,42 @@ class AuthManager: ObservableObject {
 
             // Call completion handler to ensure state is updated
             completion?()
+        }
+    }
+
+    // MARK: - Google Sign-In
+    func signInWithGoogle(presenting: UIViewController, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            completion(.failure(NSError(domain: "AuthManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Firebase clientID not found"])))
+            return
+        }
+
+        let config = GIDConfiguration(clientID: clientID)
+        GIDSignIn.sharedInstance.configuration = config
+
+        GIDSignIn.sharedInstance.signIn(withPresenting: presenting) { [weak self] result, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let user = result?.user,
+                  let idToken = user.idToken?.tokenString else {
+                completion(.failure(NSError(domain: "AuthManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to get Google credentials"])))
+                return
+            }
+
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: user.accessToken.tokenString)
+
+            Auth.auth().signIn(with: credential) { authResult, error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
+                }
+            }
         }
     }
 }

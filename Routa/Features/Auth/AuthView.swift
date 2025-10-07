@@ -266,7 +266,9 @@ struct AuthView: View {
                         
                         HStack(spacing: 16) {
                             SocialLoginButton(icon: "applelogo", title: "Apple", color: .black)
-                            SocialLoginButton(icon: "globe", title: "Google", color: .routaSecondary)
+                            SocialLoginButton(icon: "globe", title: "Google", color: .routaSecondary) {
+                                handleGoogleSignIn()
+                            }
                         }
                     }
                 }
@@ -425,7 +427,7 @@ struct AuthView: View {
     
     private func handleAuthError(_ error: Error) {
         let errorMessage = error.localizedDescription
-        
+
         if errorMessage.contains("email") {
             if errorMessage.contains("already") {
                 fieldErrors["email"] = "Bu e-posta zaten kayıtlı"
@@ -440,6 +442,40 @@ struct AuthView: View {
         } else {
             alertMessage = isSignUp ? "Hesap oluşturma hatası: \(errorMessage)" : "Giriş hatası: \(errorMessage)"
             showAlert = true
+        }
+    }
+
+    // MARK: - Google Sign-In
+    private func handleGoogleSignIn() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootViewController = windowScene.windows.first?.rootViewController else {
+            alertMessage = "Google ile giriş yapılamadı. Lütfen tekrar deneyin."
+            showAlert = true
+            return
+        }
+
+        isLoading = true
+        focusedField = nil
+
+        authManager.signInWithGoogle(presenting: rootViewController) { [self] result in
+            DispatchQueue.main.async {
+                isLoading = false
+                switch result {
+                case .success:
+                    RoutaHapticsManager.shared.success()
+                    showSuccess = true
+
+                    // Auto dismiss after success
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        dismiss()
+                    }
+
+                case .failure(let error):
+                    RoutaHapticsManager.shared.error()
+                    alertMessage = "Google ile giriş hatası: \(error.localizedDescription)"
+                    showAlert = true
+                }
+            }
         }
     }
 }
@@ -567,10 +603,11 @@ struct SocialLoginButton: View {
     let icon: String
     let title: String
     let color: Color
-    
+    var action: (() -> Void)? = nil
+
     var body: some View {
         Button(action: {
-            // Social login action - placeholder
+            action?()
         }) {
             HStack {
                 Image(systemName: icon)
@@ -587,8 +624,8 @@ struct SocialLoginButton: View {
                     .stroke(color.opacity(0.3), lineWidth: 1)
             )
         }
-        .disabled(true) // Disabled for now
-        .opacity(0.6)
+        .disabled(action == nil)
+        .opacity(action == nil ? 0.6 : 1.0)
     }
 }
 
