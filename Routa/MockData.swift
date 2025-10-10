@@ -54,7 +54,27 @@ struct MockData {
                     imageURL: "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=400&q=80",
                     description: "Avrupa ve Asya'yı ayıran boğaz"
                 )
-            ]
+            ],
+            climate: "Mild, with cool winters and warm summers. Oceanic climate.",
+            costOfLiving: Destination.CostOfLiving(
+                level: "Medium",
+                symbol: "$$",
+                description: "Affordable compared to Western Europe, but prices vary by area.",
+                dailyBudgetMin: 30,
+                dailyBudgetMax: 100
+            ),
+            topAttractions: [
+                Destination.Attraction(name: "Ayasofya", type: "Museum"),
+                Destination.Attraction(name: "Topkapı Sarayı", type: "Palace"),
+                Destination.Attraction(name: "Kapalıçarşı", type: "Shopping"),
+                Destination.Attraction(name: "Boğaz Turu", type: "Experience")
+            ],
+            travelStyle: ["Romantic", "Cultural", "Historical", "Culinary"],
+            bestFor: ["Couples", "Art Lovers", "History Enthusiasts", "Food Lovers"],
+            popularity: 95,
+            rating: 4.7,
+            createdAt: Date(),
+            updatedAt: Date()
         ),
         
         Destination(
@@ -106,7 +126,27 @@ struct MockData {
                     imageURL: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&q=80",
                     description: "Dünyanın en ünlü caddesi"
                 )
-            ]
+            ],
+            climate: "Temperate oceanic climate with mild temperatures year-round.",
+            costOfLiving: Destination.CostOfLiving(
+                level: "High",
+                symbol: "$$$",
+                description: "Expensive, especially for accommodation and dining.",
+                dailyBudgetMin: 100,
+                dailyBudgetMax: 300
+            ),
+            topAttractions: [
+                Destination.Attraction(name: "Eyfel Kulesi", type: "Monument"),
+                Destination.Attraction(name: "Louvre Müzesi", type: "Museum"),
+                Destination.Attraction(name: "Notre Dame", type: "Cathedral"),
+                Destination.Attraction(name: "Champs-Élysées", type: "Shopping")
+            ],
+            travelStyle: ["Romantic", "Cultural", "Artistic", "Luxury"],
+            bestFor: ["Couples", "Art Lovers", "Food Enthusiasts", "Fashion"],
+            popularity: 98,
+            rating: 4.8,
+            createdAt: Date(),
+            updatedAt: Date()
         ),
         
         Destination(
@@ -158,7 +198,27 @@ struct MockData {
                     imageURL: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&q=80",
                     description: "Huzurlu Shinto tapınağı"
                 )
-            ]
+            ],
+            climate: "Humid subtropical climate with hot summers and mild winters.",
+            costOfLiving: Destination.CostOfLiving(
+                level: "High",
+                symbol: "$$$",
+                description: "Expensive, especially for transportation and accommodation.",
+                dailyBudgetMin: 80,
+                dailyBudgetMax: 250
+            ),
+            topAttractions: [
+                Destination.Attraction(name: "Shibuya Kavşağı", type: "Landmark"),
+                Destination.Attraction(name: "Senso-ji Tapınağı", type: "Temple"),
+                Destination.Attraction(name: "Tokyo Tower", type: "Observation Deck"),
+                Destination.Attraction(name: "Meiji Tapınağı", type: "Temple")
+            ],
+            travelStyle: ["Modern", "Cultural", "Technological", "Culinary"],
+            bestFor: ["Tech Enthusiasts", "Food Lovers", "Culture Seekers", "Shopping"],
+            popularity: 92,
+            rating: 4.7,
+            createdAt: Date(),
+            updatedAt: Date()
         ),
         
         Destination(
@@ -210,7 +270,27 @@ struct MockData {
                     imageURL: "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=400&q=80",
                     description: "Antik Roma tapınağı"
                 )
-            ]
+            ],
+            climate: "Mediterranean climate with hot, dry summers and mild winters.",
+            costOfLiving: Destination.CostOfLiving(
+                level: "Medium-High",
+                symbol: "$$",
+                description: "Moderate to expensive, tourist areas are pricier.",
+                dailyBudgetMin: 60,
+                dailyBudgetMax: 200
+            ),
+            topAttractions: [
+                Destination.Attraction(name: "Kolezyum", type: "Monument"),
+                Destination.Attraction(name: "Trevi Çeşmesi", type: "Fountain"),
+                Destination.Attraction(name: "Vatikan", type: "Religious Site"),
+                Destination.Attraction(name: "Pantheon", type: "Temple")
+            ],
+            travelStyle: ["Historical", "Cultural", "Religious", "Romantic"],
+            bestFor: ["History Buffs", "Couples", "Art Lovers", "Foodies"],
+            popularity: 90,
+            rating: 4.6,
+            createdAt: Date(),
+            updatedAt: Date()
         ),
         
         Destination(
@@ -262,7 +342,27 @@ struct MockData {
                     imageURL: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&q=80",
                     description: "Ünlü yaya caddesi"
                 )
-            ]
+            ],
+            climate: "Mediterranean climate with mild winters and warm summers.",
+            costOfLiving: Destination.CostOfLiving(
+                level: "Medium",
+                symbol: "$$",
+                description: "More affordable than other major European cities.",
+                dailyBudgetMin: 50,
+                dailyBudgetMax: 180
+            ),
+            topAttractions: [
+                Destination.Attraction(name: "Sagrada Familia", type: "Cathedral"),
+                Destination.Attraction(name: "Park Güell", type: "Park"),
+                Destination.Attraction(name: "Gotik Mahalle", type: "Historic District"),
+                Destination.Attraction(name: "La Rambla", type: "Street")
+            ],
+            travelStyle: ["Beach", "Cultural", "Architectural", "Culinary"],
+            bestFor: ["Beach Lovers", "Architecture Fans", "Foodies", "Nightlife"],
+            popularity: 88,
+            rating: 4.6,
+            createdAt: Date(),
+            updatedAt: Date()
         )
     ]
     

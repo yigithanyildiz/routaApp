@@ -82,7 +82,25 @@ extension PreviewProviders {
                 imageURL: "https://picsum.photos/200/150",
                 description: "A preview place for testing"
             )
-        ]
+        ],
+        climate: "Mild and pleasant",
+        costOfLiving: Destination.CostOfLiving(
+            level: "Medium",
+            symbol: "$$",
+            description: "Affordable for tourists",
+            dailyBudgetMin: 50,
+            dailyBudgetMax: 150
+        ),
+        topAttractions: [
+            Destination.Attraction(name: "Preview Museum", type: "Museum"),
+            Destination.Attraction(name: "Preview Tower", type: "Monument")
+        ],
+        travelStyle: ["Cultural", "Historical"],
+        bestFor: ["Couples", "Families"],
+        popularity: 75,
+        rating: 4.5,
+        createdAt: Date(),
+        updatedAt: Date()
     )
     
     static let mockUser = User(

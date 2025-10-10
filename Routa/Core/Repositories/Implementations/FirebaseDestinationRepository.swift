@@ -161,6 +161,52 @@ class FirebaseDestinationRepository: DestinationRepository {
         // Fetch popular places for this city
         let popularPlaces = try await fetchPopularPlaces(for: cityId)
 
+        // Parse new optional fields
+        let climate = data["climate"] as? String
+
+        // Parse cost of living
+        let costOfLiving: Destination.CostOfLiving?
+        if let costDict = data["costOfLiving"] as? [String: Any],
+           let level = costDict["level"] as? String,
+           let symbol = costDict["symbol"] as? String,
+           let desc = costDict["description"] as? String,
+           let minBudget = costDict["dailyBudgetMin"] as? Int,
+           let maxBudget = costDict["dailyBudgetMax"] as? Int {
+            costOfLiving = Destination.CostOfLiving(
+                level: level,
+                symbol: symbol,
+                description: desc,
+                dailyBudgetMin: minBudget,
+                dailyBudgetMax: maxBudget
+            )
+        } else {
+            costOfLiving = nil
+        }
+
+        // Parse top attractions
+        let topAttractions: [Destination.Attraction]?
+        if let attractionsArray = data["topAttractions"] as? [[String: Any]] {
+            topAttractions = attractionsArray.compactMap { attractionDict in
+                guard let name = attractionDict["name"] as? String else { return nil }
+                let type = attractionDict["type"] as? String
+                return Destination.Attraction(name: name, type: type)
+            }
+        } else {
+            topAttractions = nil
+        }
+
+        // Parse travel style and best for
+        let travelStyle = data["travelStyle"] as? [String]
+        let bestFor = data["bestFor"] as? [String]
+
+        // Parse metadata
+        let popularity = data["popularity"] as? Int
+        let rating = data["rating"] as? Double
+
+        // Parse timestamps
+        let createdAt = (data["createdAt"] as? Timestamp)?.dateValue()
+        let updatedAt = (data["updatedAt"] as? Timestamp)?.dateValue()
+
         return Destination(
             id: cityId,
             name: name,
@@ -173,7 +219,16 @@ class FirebaseDestinationRepository: DestinationRepository {
             language: language,
             coordinates: coordinates,
             address: address,
-            popularPlaces: popularPlaces
+            popularPlaces: popularPlaces,
+            climate: climate,
+            costOfLiving: costOfLiving,
+            topAttractions: topAttractions,
+            travelStyle: travelStyle,
+            bestFor: bestFor,
+            popularity: popularity,
+            rating: rating,
+            createdAt: createdAt,
+            updatedAt: updatedAt
         )
     }
 

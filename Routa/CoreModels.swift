@@ -15,19 +15,43 @@ struct Destination: Identifiable, Codable, Hashable {
     let coordinates: Coordinates
     let address: String
     let popularPlaces: [PopularPlace]
-    
+
+    // New fields
+    let climate: String?
+    let costOfLiving: CostOfLiving?
+    let topAttractions: [Attraction]?
+    let travelStyle: [String]?
+    let bestFor: [String]?
+    let popularity: Int?
+    let rating: Double?
+    let createdAt: Date?
+    let updatedAt: Date?
+
     struct Temperature: Codable, Hashable {
         let summer: Int
         let winter: Int
     }
-    
+
     struct Coordinates: Codable, Hashable {
         let latitude: Double
         let longitude: Double
-        
+
         var clLocationCoordinate2D: CLLocationCoordinate2D {
             CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         }
+    }
+
+    struct CostOfLiving: Codable, Hashable {
+        let level: String // "Low", "Medium", "High", "Medium-High"
+        let symbol: String // "$", "$$", "$$$"
+        let description: String
+        let dailyBudgetMin: Int // USD
+        let dailyBudgetMax: Int // USD
+    }
+
+    struct Attraction: Codable, Hashable {
+        let name: String
+        let type: String? // "Museum", "Monument", etc.
     }
 }
 

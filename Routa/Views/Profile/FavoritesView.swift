@@ -171,7 +171,16 @@ struct FavoritesView: View {
                     language: "İngilizce",
                     coordinates: Destination.Coordinates(latitude: 0, longitude: 0),
                     address: "Bilinmeyen Konum",
-                    popularPlaces: []
+                    popularPlaces: [],
+                    climate: nil,
+                    costOfLiving: nil,
+                    topAttractions: nil,
+                    travelStyle: nil,
+                    bestFor: nil,
+                    popularity: nil,
+                    rating: nil,
+                    createdAt: nil,
+                    updatedAt: nil
                 )
             }
         }
