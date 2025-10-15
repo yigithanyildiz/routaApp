@@ -13,6 +13,7 @@
 		543A5C032E3DFE070007ED64 /* FirebaseAuthCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = 543A5C022E3DFE070007ED64 /* FirebaseAuthCombine-Community */; };
 		544FCEBC2E95B27B00F154E0 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 544FCEBB2E95B27B00F154E0 /* GoogleSignIn */; };
 		544FCEBE2E95B27B00F154E0 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 544FCEBD2E95B27B00F154E0 /* GoogleSignInSwift */; };
+		5468E4602E9F0008005FB12D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5468E45F2E9F0008005FB12D /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,7 @@
 				542DBC442E7B73210072A320 /* FirebaseDatabase in Frameworks */,
 				542DBC462E7B73210072A320 /* FirebaseFirestore in Frameworks */,
 				544FCEBE2E95B27B00F154E0 /* GoogleSignInSwift in Frameworks */,
+				5468E4602E9F0008005FB12D /* FirebaseStorage in Frameworks */,
 				543A5C012E3DFE070007ED64 /* FirebaseAuth in Frameworks */,
 				543A5C032E3DFE070007ED64 /* FirebaseAuthCombine-Community in Frameworks */,
 			);
@@ -146,6 +148,7 @@
 				542DBC452E7B73210072A320 /* FirebaseFirestore */,
 				544FCEBB2E95B27B00F154E0 /* GoogleSignIn */,
 				544FCEBD2E95B27B00F154E0 /* GoogleSignInSwift */,
+				5468E45F2E9F0008005FB12D /* FirebaseStorage */,
 			);
 			productName = Routa;
 			productReference = 54E41FAB2E2E9CCB007DAB5D /* Routa.app */;
@@ -650,6 +653,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 544FCEBA2E95B27B00F154E0 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
 			productName = GoogleSignInSwift;
+		};
+		5468E45F2E9F0008005FB12D /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

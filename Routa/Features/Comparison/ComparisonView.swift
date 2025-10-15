@@ -53,12 +53,12 @@ struct ComparisonView: View {
                             .padding(.vertical, 60)
                     }
                 }
+                .padding(.top, 15)
                 .padding(.bottom, LayoutConstants.tabBarHeight + 20)
             }
         }
         .background(Color.routaBackground)
-        .navigationTitle("Compare Destinations")
-        .navigationBarTitleDisplayMode(.inline)
+        
         .dynamicIslandBlur()
         .sheet(isPresented: $showingDestinationPicker) {
             if let side = editingSide {

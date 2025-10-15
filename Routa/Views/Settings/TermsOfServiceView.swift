@@ -2,201 +2,246 @@ import SwiftUI
 
 struct TermsOfServiceView: View {
     @Environment(\.dismiss) var dismiss
-    
+    @StateObject private var themeManager = RoutaThemeManager.shared
+
     var body: some View {
-        NavigationStack {
-            ScrollView {
+        List {
+            // Hero Section
+            Section {
                 VStack(spacing: RoutaSpacing.lg) {
-                    headerSection
-                    
-                    VStack(spacing: RoutaSpacing.xl) {
-                        termsSection
-                        userResponsibilitiesSection
-                        limitationsSection
-                        updatesSection
+                    ZStack {
+                        Circle()
+                            .fill(LinearGradient(colors: [.indigo, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
+                            .frame(width: 80, height: 80)
+                            .routaShadow(.medium, style: .colored(.indigo))
+
+                        Image(systemName: "doc.text.fill")
+                            .font(.system(size: 40))
+                            .foregroundColor(.white)
                     }
-                }
-                .padding(.horizontal, RoutaSpacing.lg)
-                .padding(.bottom, 90)
-            }
-            .navigationTitle("Kullanım Koşulları")
-            .navigationBarTitleDisplayMode(.large)
-            .background(Color.routaBackground)
-          
-        }
-    }
-    
-    private var headerSection: some View {
-        RoutaCard(style: .glassmorphic, elevation: .medium) {
-            VStack(spacing: RoutaSpacing.md) {
-                Image(systemName: "doc.text.fill")
-                    .font(.system(size: 60))
-                    .foregroundColor(.routaSecondary)
-                
-                Text("Kullanım Koşulları")
-                    .routaTitle2()
-                    .foregroundColor(.routaText)
-                    .multilineTextAlignment(.center)
-                
-                Text("Yürürlük tarihi: \(Date().formatted(date: .abbreviated, time: .omitted))")
-                    .routaCaption1()
-                    .foregroundColor(.routaTextSecondary)
-                    .padding(.horizontal, RoutaSpacing.md)
-            }
-            .padding(RoutaSpacing.lg)
-        }
-        .padding(.top, RoutaSpacing.md)
-    }
-    
-    private var termsSection: some View {
-        RoutaCard(style: .standard, elevation: .low) {
-            VStack(alignment: .leading, spacing: RoutaSpacing.md) {
-                Text("Genel Koşullar")
-                    .routaTitle3()
-                    .foregroundColor(.routaText)
-                
-                VStack(alignment: .leading, spacing: RoutaSpacing.sm) {
-                    Text("Bu kullanım koşulları, Routa mobil uygulamasını kullanımınızı düzenler. Uygulamayı kullanarak bu koşulları kabul etmiş sayılırsınız.")
+                    .padding(.top, RoutaSpacing.sm)
+
+                    VStack(spacing: RoutaSpacing.xs) {
+                        Text("Kullanım Koşulları")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundColor(.routaText)
+                            .multilineTextAlignment(.center)
+
+                        Text("Yürürlük tarihi: \(Date().formatted(date: .abbreviated, time: .omitted))")
+                            .routaCaption1()
+                            .foregroundColor(.routaTextSecondary)
+                    }
+
+                    Text("Routa'yı kullanarak bu koşulları kabul etmiş olursunuz")
                         .routaBody()
-                        .foregroundColor(.routaText)
-                    
-                    VStack(alignment: .leading, spacing: RoutaSpacing.xs) {
-                        bulletPoint("Uygulama 13 yaş üstü kullanıcılar içindir")
-                        bulletPoint("Hesap bilgilerinizin doğruluğundan siz sorumlusunuz")
-                        bulletPoint("Uygulamayı yasal olmayan amaçlarla kullanamazsınız")
-                        bulletPoint("İçeriğimizi izinsiz kopyalayamaz veya dağıtamazsınız")
-                    }
-                }
-            }
-            .padding(RoutaSpacing.lg)
-        }
-    }
-    
-    private var userResponsibilitiesSection: some View {
-        RoutaCard(style: .standard, elevation: .low) {
-            VStack(alignment: .leading, spacing: RoutaSpacing.md) {
-                Text("Kullanıcı Sorumlulukları")
-                    .routaTitle3()
-                    .foregroundColor(.routaText)
-                
-                VStack(alignment: .leading, spacing: RoutaSpacing.sm) {
-                    Text("Routa kullanırken aşağıdaki kurallara uymanız gerekmektedir:")
-                        .routaBody()
-                        .foregroundColor(.routaText)
-                    
-                    VStack(alignment: .leading, spacing: RoutaSpacing.xs) {
-                        bulletPoint("Hesap güvenliğinizi koruyun ve şifrenizi paylaşmayın")
-                        bulletPoint("Yanlış veya yanıltıcı bilgi paylaşmayın")
-                        bulletPoint("Diğer kullanıcılara saygı gösterin")
-                        bulletPoint("Spam veya zararlı içerik göndermezsiniz")
-                        bulletPoint("Seyahat planlarınızın sorumluluğu size aittir")
-                    }
-                    
-                    Text("Bu kurallara uymayan hesaplar askıya alınabilir veya silinebilir.")
-                        .routaBodyEmphasized()
-                        .foregroundColor(.routaWarning)
-                        .padding(.top, RoutaSpacing.sm)
-                }
-            }
-            .padding(RoutaSpacing.lg)
-        }
-    }
-    
-    private var limitationsSection: some View {
-        RoutaCard(style: .standard, elevation: .low) {
-            VStack(alignment: .leading, spacing: RoutaSpacing.md) {
-                Text("Sorumluluk Sınırları")
-                    .routaTitle3()
-                    .foregroundColor(.routaText)
-                
-                VStack(alignment: .leading, spacing: RoutaSpacing.sm) {
-                    Text("Routa kullanımı sırasında aşağıdaki hususları göz önünde bulundurun:")
-                        .routaBody()
-                        .foregroundColor(.routaText)
-                    
-                    VStack(alignment: .leading, spacing: RoutaSpacing.xs) {
-                        bulletPoint("Uygulama \"olduğu gibi\" sunulur, garanti verilmez")
-                        bulletPoint("Seyahat önerileri sadece bilgilendirme amaçlıdır")
-                        bulletPoint("Üçüncü taraf hizmetlerden sorumlu değiliz")
-                        bulletPoint("Uygulama kesintileri yaşanabilir")
-                        bulletPoint("Verilerinizi düzenli olarak yedeklemenizi öneririz")
-                    }
-                    
-                    Text("Seyahat kararlarınızı verirken güncel bilgileri kontrol etmek size aittir.")
-                        .routaCallout()
                         .foregroundColor(.routaTextSecondary)
-                        .padding(.top, RoutaSpacing.sm)
-                        .italic()
+                        .multilineTextAlignment(.center)
+                        .padding(.bottom, RoutaSpacing.sm)
                 }
+                .frame(maxWidth: .infinity)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
-            .padding(RoutaSpacing.lg)
-        }
-    }
-    
-    private var updatesSection: some View {
-        RoutaCard(style: .standard, elevation: .low) {
-            VStack(alignment: .leading, spacing: RoutaSpacing.md) {
-                Text("Güncellemeler ve İletişim")
-                    .routaTitle3()
-                    .foregroundColor(.routaText)
-                
+
+            // General Terms Section
+            Section {
+                infoBlock(
+                    title: "Genel Koşullar",
+                    items: [
+                        "Uygulama 13 yaş üstü kullanıcılar içindir",
+                        "Hesap bilgilerinizin doğruluğundan siz sorumlusunuz",
+                        "Uygulamayı yasal olmayan amaçlarla kullanamazsınız",
+                        "İçeriğimizi izinsiz kopyalayamaz veya dağıtamazsınız"
+                    ]
+                )
+            } header: {
+                Text("GENEL KURALLAR")
+                    .font(.routaCaption2())
+                    .foregroundColor(.routaTextSecondary)
+            }
+
+            // User Responsibilities Section
+            Section {
+                infoBlock(
+                    title: "Sorumluluklarınız",
+                    items: [
+                        "Hesap güvenliğinizi koruyun ve şifrenizi paylaşmayın",
+                        "Yanlış veya yanıltıcı bilgi paylaşmayın",
+                        "Diğer kullanıcılara saygı gösterin",
+                        "Spam veya zararlı içerik göndermezsiniz",
+                        "Seyahat planlarınızın sorumluluğu size aittir"
+                    ]
+                )
+
                 VStack(alignment: .leading, spacing: RoutaSpacing.sm) {
+                    HStack(spacing: RoutaSpacing.sm) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(.routaWarning)
+
+                        Text("Bu kurallara uymayan hesaplar askıya alınabilir veya silinebilir.")
+                            .routaCallout()
+                            .foregroundColor(.routaText)
+                            .fontWeight(.semibold)
+                    }
+                }
+                .padding(.vertical, RoutaSpacing.xs)
+            } header: {
+                Text("KULLANICI SORUMLULUKLARI")
+                    .font(.routaCaption2())
+                    .foregroundColor(.routaTextSecondary)
+            }
+
+            // Limitations Section
+            Section {
+                infoBlock(
+                    title: "Sorumluluk Sınırları",
+                    items: [
+                        "Uygulama \"olduğu gibi\" sunulur, garanti verilmez",
+                        "Seyahat önerileri sadece bilgilendirme amaçlıdır",
+                        "Üçüncü taraf hizmetlerden sorumlu değiliz",
+                        "Uygulama kesintileri yaşanabilir",
+                        "Verilerinizi düzenli olarak yedeklemenizi öneririz"
+                    ]
+                )
+
+                VStack(alignment: .leading, spacing: RoutaSpacing.sm) {
+                    HStack(spacing: RoutaSpacing.sm) {
+                        Image(systemName: "info.circle.fill")
+                            .font(.system(size: 16))
+                            .foregroundColor(.routaAccent)
+
+                        Text("Seyahat kararlarınızı verirken güncel bilgileri kontrol etmek size aittir.")
+                            .routaCallout()
+                            .foregroundColor(.routaTextSecondary)
+                            .italic()
+                    }
+                }
+                .padding(.vertical, RoutaSpacing.xs)
+            } header: {
+                Text("SORUMLULUK SINIRLARI")
+                    .font(.routaCaption2())
+                    .foregroundColor(.routaTextSecondary)
+            }
+
+            // Updates and Contact Section
+            Section {
+                VStack(alignment: .leading, spacing: RoutaSpacing.md) {
+                    Text("Güncellemeler")
+                        .routaHeadline()
+                        .foregroundColor(.routaText)
+
                     Text("Bu kullanım koşulları zaman zaman güncellenebilir. Önemli değişiklikler hakkında bilgilendirileceksiniz.")
                         .routaBody()
                         .foregroundColor(.routaText)
-                    
-                    Text("Sorularınız için bizimle iletişime geçebilirsiniz:")
-                        .routaBody()
-                        .foregroundColor(.routaText)
-                        .padding(.top, RoutaSpacing.sm)
-                    
-                    VStack(alignment: .leading, spacing: RoutaSpacing.xs) {
-                        contactRow(icon: "envelope.fill", text: "legal@routa.app")
-                        contactRow(icon: "phone.fill", text: "+90 (212) 555-0123")
-                        contactRow(icon: "building.2.fill", text: "Routa Teknoloji A.Ş.")
-                        contactRow(icon: "location.fill", text: "Maslak, İstanbul")
-                    }
-                    .padding(.top, RoutaSpacing.sm)
-                    
-                    Text("Son güncelleme tarihi: \(Date().formatted(date: .complete, time: .omitted))")
+                }
+                .padding(.vertical, RoutaSpacing.xs)
+            } header: {
+                Text("GÜNCELLEMELER")
+                    .font(.routaCaption2())
+                    .foregroundColor(.routaTextSecondary)
+            }
+
+            // Contact Section
+            Section {
+                contactRow(icon: "envelope.fill", title: "E-posta", value: "legal@routa.app", color: .blue)
+                contactRow(icon: "phone.fill", title: "Telefon", value: "+90 (212) 555-0123", color: .green)
+                contactRow(icon: "building.2.fill", title: "Şirket", value: "Routa Teknoloji A.Ş.", color: .purple)
+                contactRow(icon: "location.fill", title: "Adres", value: "Maslak, İstanbul", color: .orange)
+            } header: {
+                Text("İLETİŞİM")
+                    .font(.routaCaption2())
+                    .foregroundColor(.routaTextSecondary)
+            }
+
+            // Footer
+            Section {
+                VStack(spacing: RoutaSpacing.xs) {
+                    Text("Son güncelleme tarihi:")
                         .routaCaption2()
                         .foregroundColor(.routaTextSecondary)
-                        .padding(.top, RoutaSpacing.md)
-                        .frame(maxWidth: .infinity, alignment: .center)
+
+                    Text(Date().formatted(date: .complete, time: .omitted))
+                        .routaCaption1()
+                        .foregroundColor(.routaText)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, RoutaSpacing.sm)
+                .listRowBackground(Color.clear)
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("Kullanım Koşulları")
+        .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(themeManager.isDarkMode ? .dark : .light)
+    }
+
+
+    private func infoBlock(title: String, items: [String]) -> some View {
+        VStack(alignment: .leading, spacing: RoutaSpacing.md) {
+            Text(title)
+                .routaHeadline()
+                .foregroundColor(.routaText)
+
+            VStack(alignment: .leading, spacing: RoutaSpacing.xs) {
+                ForEach(items, id: \.self) { item in
+                    HStack(alignment: .top, spacing: RoutaSpacing.sm) {
+                        Text("•")
+                            .routaBody()
+                            .foregroundColor(.routaSecondary)
+                            .frame(width: 12, alignment: .leading)
+
+                        Text(item)
+                            .routaBody()
+                            .foregroundColor(.routaText)
+                    }
                 }
             }
-            .padding(RoutaSpacing.lg)
         }
+        .padding(.vertical, RoutaSpacing.xs)
     }
-    
-    private func bulletPoint(_ text: String) -> some View {
-        HStack(alignment: .top, spacing: RoutaSpacing.sm) {
-            Text("•")
-                .routaBody()
-                .foregroundColor(.routaSecondary)
-                .frame(width: 12, alignment: .leading)
-            
-            Text(text)
-                .routaBody()
-                .foregroundColor(.routaText)
+
+    private func contactRow(icon: String, title: String, value: String, color: Color) -> some View {
+        HStack(spacing: RoutaSpacing.md) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(LinearGradient(colors: [color, color.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 32, height: 32)
+
+                Image(systemName: icon)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.white)
+            }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .routaCaption1()
+                    .foregroundColor(.routaTextSecondary)
+
+                Text(value)
+                    .routaCallout()
+                    .foregroundColor(.routaText)
+            }
+
+            Spacer()
         }
-    }
-    
-    private func contactRow(icon: String, text: String) -> some View {
-        HStack(spacing: RoutaSpacing.sm) {
-            Image(systemName: icon)
-                .font(.routaCaption1())
-                .foregroundColor(.routaSecondary)
-                .frame(width: 20, alignment: .leading)
-            
-            Text(text)
-                .routaCallout()
-                .foregroundColor(.routaTextSecondary)
-        }
+        .padding(.vertical, 4)
     }
 }
 
-#Preview {
-    TermsOfServiceView()
-        .previewEnvironment(authenticated: false)
+// MARK: - Previews
+
+#Preview("Terms of Service - Light Mode") {
+    NavigationStack {
+        TermsOfServiceView()
+    }
+    .preferredColorScheme(.light)
+}
+
+#Preview("Terms of Service - Dark Mode") {
+    NavigationStack {
+        TermsOfServiceView()
+    }
+    .preferredColorScheme(.dark)
 }

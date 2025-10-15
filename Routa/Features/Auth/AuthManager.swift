@@ -1,6 +1,7 @@
 import Foundation
 import FirebaseAuth
 import FirebaseCore
+import FirebaseFirestore
 import Combine
 import GoogleSignIn
 
@@ -38,11 +39,9 @@ class AuthManager: ObservableObject {
         authStateListenerHandle = Auth.auth().addStateDidChangeListener { [weak self] _, firebaseUser in
             DispatchQueue.main.async {
                 if let firebaseUser = firebaseUser {
-                    self?.user = User(
-                        id: firebaseUser.uid,
-                        email: firebaseUser.email ?? "",
-                        displayName: firebaseUser.displayName
-                    )
+                    // Load user data from Firestore
+                    self?.loadUserFromFirestore(firebaseUser: firebaseUser)
+
                     self?.isAuthenticated = true
                     self?.isGuest = false
                     self?.appState = .authenticated
@@ -60,6 +59,33 @@ class AuthManager: ObservableObject {
                     } else {
                         self?.appState = .gateway
                     }
+                }
+            }
+        }
+    }
+
+    private func loadUserFromFirestore(firebaseUser: FirebaseAuth.User) {
+        let db = Firestore.firestore()
+        let userRef = db.collection("users").document(firebaseUser.uid)
+
+        userRef.getDocument { [weak self] document, error in
+            DispatchQueue.main.async {
+                if let document = document, document.exists {
+                    let bio = document.data()?["bio"] as? String
+                    self?.user = User(
+                        id: firebaseUser.uid,
+                        email: firebaseUser.email ?? "",
+                        displayName: firebaseUser.displayName,
+                        bio: bio
+                    )
+                } else {
+                    // No Firestore document yet, create basic user
+                    self?.user = User(
+                        id: firebaseUser.uid,
+                        email: firebaseUser.email ?? "",
+                        displayName: firebaseUser.displayName,
+                        bio: nil
+                    )
                 }
             }
         }
@@ -105,6 +131,9 @@ class AuthManager: ObservableObject {
             // Clean up favorites manager before signing out
             favoritesManager.performCleanup()
 
+            // Note: Profile photo is NOT cleared - it persists across sessions
+            // User can manually change it via Edit Profile
+
             try Auth.auth().signOut()
 
             isGuest = false
@@ -131,6 +160,57 @@ class AuthManager: ObservableObject {
 
             // Call completion handler to ensure state is updated
             completion?()
+        }
+    }
+
+    // MARK: - Update Profile
+    func updateProfile(displayName: String?, bio: String?, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let currentUser = Auth.auth().currentUser else {
+            completion(.failure(NSError(domain: "AuthManager", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])))
+            return
+        }
+
+        let changeRequest = currentUser.createProfileChangeRequest()
+
+        if let displayName = displayName {
+            changeRequest.displayName = displayName
+        }
+
+        changeRequest.commitChanges { [weak self] error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+
+            // Save bio to Firestore
+            let db = Firestore.firestore()
+            let userRef = db.collection("users").document(currentUser.uid)
+
+            var userData: [String: Any] = [:]
+            if let bio = bio {
+                userData["bio"] = bio
+            }
+
+            userRef.setData(userData, merge: true) { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        // Update local user object
+                        if let firebaseUser = Auth.auth().currentUser {
+                            self?.user = User(
+                                id: firebaseUser.uid,
+                                email: firebaseUser.email ?? "",
+                                displayName: firebaseUser.displayName,
+                                bio: bio
+                            )
+                        }
+                        completion(.success(()))
+                    }
+                }
+            }
         }
     }
 

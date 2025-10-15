@@ -111,6 +111,25 @@ struct RoutaGradients {
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
+
+    // MARK: - Status Gradients
+    static let successGradient = LinearGradient(
+        colors: [Color.routaSuccess, Color.routaSuccess.opacity(0.8)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static let warningGradient = LinearGradient(
+        colors: [Color.routaWarning, Color.routaWarning.opacity(0.8)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static let errorGradient = LinearGradient(
+        colors: [Color.routaError, Color.routaError.opacity(0.8)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
     
     // MARK: - Special Gradients
     static let heroGradient = LinearGradient(
